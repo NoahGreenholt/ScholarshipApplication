@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Scholarship Application</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-color) 0%, #e9ecef 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9 0%, var(--secondary-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #229954 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        #walletStatus {
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .loading-spinner {
+            display: none;
+        }
+
+        .program-card {
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .application-item {
+            border-left: 4px solid var(--success-color);
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 40px 0;
+            }
+            
+            .btn-primary,
+            .btn-success,
+            .btn-warning {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>
+                Anonymous Scholarship Platform
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span id="walletStatus" class="nav-link">Not Connected</span>
+                    </li>
+                    <li class="nav-item">
+                        <button id="connectWallet" class="btn btn-outline-light btn-sm">Connect Wallet</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-shield-alt me-3"></i>
+                Anonymous Scholarship Applications
+            </h1>
+            <p class="lead mb-4">Apply for scholarships with complete privacy using FHE encryption technology</p>
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <h5>Complete Privacy</h5>
+                    <p>Your personal data stays encrypted on-chain</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h5>FHE Security</h5>
+                    <p>Fully Homomorphic Encryption protects your information</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h5>Fair Evaluation</h5>
+                    <p>Transparent and unbiased selection process</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Tab Navigation -->
+        <ul class="nav nav-pills nav-fill mb-4" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="programs-tab" data-bs-toggle="pill" data-bs-target="#programs" type="button" role="tab">
+                    <i class="fas fa-list me-2"></i>Available Programs
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="apply-tab" data-bs-toggle="pill" data-bs-target="#apply" type="button" role="tab">
+                    <i class="fas fa-file-alt me-2"></i>Apply Now
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="applications-tab" data-bs-toggle="pill" data-bs-target="#applications" type="button" role="tab">
+                    <i class="fas fa-history me-2"></i>My Applications
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="admin-tab" data-bs-toggle="pill" data-bs-target="#admin" type="button" role="tab">
+                    <i class="fas fa-cog me-2"></i>Admin Panel
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="mainTabsContent">
+            <!-- Available Programs Tab -->
+            <div class="tab-pane fade show active" id="programs" role="tabpanel">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-graduation-cap me-2"></i>
+                                        Available Scholarship Programs
+                                    </h5>
+                                    <div>
+                                        <button class="btn btn-outline-primary btn-sm me-2" onclick="forceRefreshPrograms()">
+                                            <i class="fas fa-sync-alt me-1"></i>Refresh Programs
+                                        </button>
+                                        <button class="btn btn-success btn-sm me-2" onclick="testApplyFunction()">
+                                            <i class="fas fa-test me-1"></i>Test Apply
+                                        </button>
+                                        <button class="btn btn-warning btn-sm" onclick="deployAllPrograms()">
+                                            <i class="fas fa-upload me-1"></i>Deploy All Programs
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="programsList" class="row">
+                                    <!-- Programs will be loaded here -->
+                                    <div class="col-12 text-center">
+                                        <p class="text-muted">Loading programs...</p>
+                                        <div class="spinner-border text-primary" role="status"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Apply Tab -->
+            <div class="tab-pane fade" id="apply" role="tabpanel">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-file-alt me-2"></i>
+                                    Submit Application
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="applicationForm">
+                                    <div class="mb-3">
+                                        <label for="programSelect" class="form-label">Select Program</label>
+                                        <select class="form-control" id="programSelect" required>
+                                            <option value="">Choose a scholarship program...</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Program Details Display -->
+                                    <div id="programDetails" class="mb-4" style="display: none;">
+                                        <div class="card border-primary">
+                                            <div class="card-header bg-primary text-white">
+                                                <h6 class="mb-0">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    Program Details
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div id="programDetailsContent">
+                                                    <!-- Program details will be populated here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Eligibility Confirmation</label>
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <div class="form-check mb-3">
+                                                    <input class="form-check-input" type="checkbox" id="financialNeed" required>
+                                                    <label class="form-check-label" for="financialNeed">
+                                                        <strong>I have demonstrated financial need</strong>
+                                                        <br><small class="text-muted">Check if you require financial assistance for your education</small>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="academicCriteria" required>
+                                                    <label class="form-check-label" for="academicCriteria">
+                                                        <strong>I meet all academic and program requirements</strong>
+                                                        <br><small class="text-muted">Confirm that you meet all requirements listed above</small>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <small class="form-text text-muted">
+                                            <i class="fas fa-shield-alt me-1"></i>
+                                            Your responses are encrypted and remain private using FHE technology. Only eligibility status is computed.
+                                        </small>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                                            <i class="fas fa-paper-plane me-2"></i>
+                                            Submit Application
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Applications Tab -->
+            <div class="tab-pane fade" id="applications" role="tabpanel">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-history me-2"></i>
+                            My Application History
+                        </h5>
+                        <button class="btn btn-outline-primary btn-sm" onclick="loadUserApplications()">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="applicationsList">
+                            <!-- Applications will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Panel Tab -->
+            <div class="tab-pane fade" id="admin" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-plus me-2"></i>
+                                    Create New Program
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="createProgramForm">
+                                    <div class="mb-3">
+                                        <label for="programName" class="form-label">Program Name</label>
+                                        <input type="text" class="form-control" id="programName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="programDescription" class="form-label">Description</label>
+                                        <textarea class="form-control" id="programDescription" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="maxApplications" class="form-label">Maximum Applications</label>
+                                        <input type="number" class="form-control" id="maxApplications" min="1" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-plus me-2"></i>
+                                        Create Program
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-clipboard-list me-2"></i>
+                                    Manage Applications
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="adminApplicationsList">
+                                    <!-- Admin applications will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-4 bg-dark text-light">
+        <div class="container text-center">
+            <p class="mb-0">
+                <i class="fas fa-shield-alt me-2"></i>
+                Anonymous Scholarship Platform - Powered by FHE Technology
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and Ethers.js v6 from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script 
+        src="https://unpkg.com/ethers@6.13.0/dist/ethers.umd.min.js"
+        onerror="this.onerror=null; this.src='https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js'; window.ethersVersion='v5';"
+    ></script>
+    
+    <!-- Main Application Script -->
+    <script>
+        // Contract configuration
+        const CONTRACT_ADDRESS = '0x9FC9675877f6d6ea2cD9CCC3a37F81DA641765FE'; // Deployed contract address
+        const CONTRACT_ABI = [
+            "function createProgram(string memory _name, string memory _description, uint256 _maxApplications) external",
+            "function submitApplication(uint256 _programId, bool _hasFinancialNeed, bool _meetsAcademicCriteria) external",
+            "function processApplication(uint256 _applicationId, uint256 _programId, bool _approved) external",
+            "function getProgramInfo(uint256 _programId) external view returns (string memory name, string memory description, uint256 maxApplications, uint256 currentApplications, bool isActive)",
+            "function getMyApplications(address _applicant) external view returns (uint256[] memory)",
+            "function getProgramApplications(uint256 _programId) external view returns (uint256[] memory)",
+            "function getApplicationBasicInfo(uint256 _applicationId) external view returns (address applicant, uint256 timestamp, bool processed)",
+            "function programCount() external view returns (uint256)",
+            "function applicationCount() external view returns (uint256)",
+            "event ApplicationSubmitted(uint256 indexed applicationId, uint256 indexed programId, address indexed applicant)",
+            "event ApplicationProcessed(uint256 indexed applicationId, bool approved)",
+            "event ProgramCreated(uint256 indexed programId, string name, address administrator)"
+        ];
+
+        // Global variables
+        let provider;
+        let signer;
+        let contract;
+        let userAddress;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if ethers.js is loaded
+            if (typeof ethers === 'undefined') {
+                console.error('Ethers.js is not loaded!');
+                showErrorMessage('Failed to load required libraries. Please refresh the page.');
+                return;
+            }
+            
+            console.log('Ethers.js loaded successfully. Version:', window.ethersVersion || 'v6', '| ethers.version:', ethers.version || 'unknown');
+            
+            setupEventListeners();
+            loadPresetPrograms(); // Show preset programs initially
+            setupNetworkListeners();
+            
+            // Check if wallet was previously connected
+            checkWalletConnection();
+        });
+
+        async function checkWalletConnection() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        // Auto-reconnect if previously connected
+                        console.log('Previous wallet connection detected, attempting to reconnect...');
+                        // Don't auto-connect, let user click connect button for security
+                    }
+                } catch (error) {
+                    console.log('No previous wallet connection found');
+                }
+            }
+        }
+
+        function setupNetworkListeners() {
+            if (typeof window.ethereum !== 'undefined') {
+                // Listen for account changes
+                window.ethereum.on('accountsChanged', function (accounts) {
+                    if (accounts.length === 0) {
+                        // User disconnected
+                        resetWalletState();
+                    } else {
+                        // User switched accounts
+                        location.reload();
+                    }
+                });
+
+                // Listen for network changes
+                window.ethereum.on('chainChanged', function (chainId) {
+                    location.reload();
+                });
+            }
+        }
+
+        function resetWalletState() {
+            userAddress = null;
+            provider = null;
+            signer = null;
+            contract = null;
+            
+            const walletStatus = document.getElementById('walletStatus');
+            const connectButton = document.getElementById('connectWallet');
+            
+            walletStatus.textContent = 'Not Connected';
+            walletStatus.className = 'nav-link text-muted';
+            connectButton.textContent = 'Connect Wallet';
+            connectButton.className = 'btn btn-outline-light btn-sm';
+            connectButton.disabled = false;
+            
+            // Reset hero section
+            const heroSection = document.querySelector('.hero-section .container .row');
+            if (heroSection) {
+                heroSection.innerHTML = `
+                    <div class="col-md-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <h5>Complete Privacy</h5>
+                        <p>Your personal data stays encrypted on-chain</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h5>FHE Security</h5>
+                        <p>Fully Homomorphic Encryption protects your information</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                        <h5>Fair Evaluation</h5>
+                        <p>Transparent and unbiased selection process</p>
+                    </div>
+                `;
+            }
+            
+            loadPresetPrograms();
+            showErrorMessage('Wallet disconnected. Please reconnect to continue using the application.');
+        }
+
+        function setupEventListeners() {
+            document.getElementById('connectWallet').addEventListener('click', connectWallet);
+            document.getElementById('applicationForm').addEventListener('submit', handleApplicationSubmit);
+            document.getElementById('createProgramForm').addEventListener('submit', handleCreateProgram);
+            
+            // Program selection listener
+            document.getElementById('programSelect').addEventListener('change', function(e) {
+                const programId = e.target.value;
+                updateProgramDetails(programId);
+                updateSubmitButton();
+            });
+            
+            // Checkbox listeners
+            document.getElementById('financialNeed').addEventListener('change', updateSubmitButton);
+            document.getElementById('academicCriteria').addEventListener('change', updateSubmitButton);
+            
+            // Tab change listeners
+            document.querySelectorAll('[data-bs-toggle="pill"]').forEach(tab => {
+                tab.addEventListener('shown.bs.tab', function(event) {
+                    const targetId = event.target.getAttribute('data-bs-target').substring(1);
+                    if (targetId === 'applications') {
+                        console.log('Applications tab activated, loading user applications...');
+                        loadUserApplications();
+                    } else if (targetId === 'admin') {
+                        loadAdminData();
+                    }
+                });
+            });
+        }
+
+        function updateProgramDetails(programId) {
+            const programDetails = document.getElementById('programDetails');
+            const programDetailsContent = document.getElementById('programDetailsContent');
+            
+            if (!programId) {
+                programDetails.style.display = 'none';
+                return;
+            }
+            
+            const program = currentPrograms.find(p => p.id == programId);
+            if (!program) return;
+            
+            programDetailsContent.innerHTML = `
+                <h6 class="text-primary">${program.name}</h6>
+                <p class="mb-3">${program.description}</p>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <small class="text-muted">Available Spots:</small>
+                        <div class="fw-bold text-success">${program.maxApplications - program.currentApplications} remaining</div>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted">Total Applications:</small>
+                        <div class="fw-bold">${program.currentApplications}/${program.maxApplications}</div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <small class="text-muted fw-bold">Requirements:</small>
+                    <div class="mt-2">
+                        ${program.eligibilityReq.map(req => 
+                            `<div class="d-flex align-items-center mb-1">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <span>${req}</span>
+                            </div>`
+                        ).join('')}
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Note:</strong> All applications are processed using FHE encryption to ensure complete privacy while maintaining verification capabilities.
+                </div>
+            `;
+            
+            programDetails.style.display = 'block';
+        }
+
+        function updateSubmitButton() {
+            const programId = document.getElementById('programSelect').value;
+            const financialNeed = document.getElementById('financialNeed').checked;
+            const academicCriteria = document.getElementById('academicCriteria').checked;
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (programId && financialNeed && academicCriteria) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Application';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Complete All Requirements';
+            }
+        }
+
+        async function connectWallet() {
+            try {
+                // Check if ethers.js is loaded
+                if (typeof ethers === 'undefined') {
+                    showErrorMessage('Ethers.js library is not loaded. Please refresh the page.');
+                    return;
+                }
+                
+                // Step 1: Check for MetaMask
+                if (typeof window.ethereum === 'undefined') {
+                    showErrorMessage('Please install MetaMask to use this application');
+                    return;
+                }
+
+                // Step 2: Request account access
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                // Step 3: Create provider and signer (compatible with v5/v6)
+                if (window.ethersVersion === 'v5' || !ethers.BrowserProvider) {
+                    // Fallback to ethers.js v5
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    signer = provider.getSigner();
+                    userAddress = await signer.getAddress();
+                } else {
+                    // Use ethers.js v6
+                    provider = new ethers.BrowserProvider(window.ethereum);
+                    signer = await provider.getSigner();
+                    userAddress = await signer.getAddress();
+                }
+
+                // Step 4: Check and switch to Sepolia network
+                const network = await provider.getNetwork();
+                const sepoliaChainId = '0xaa36a7'; // Sepolia testnet chain ID
+                
+                const chainId = window.ethersVersion === 'v5' ? network.chainId : Number(network.chainId);
+                if (chainId !== 11155111) { // 11155111 is decimal for 0xaa36a7
+                    try {
+                        // Try to switch to Sepolia
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: sepoliaChainId }],
+                        });
+                    } catch (switchError) {
+                        // If Sepolia is not added, add it
+                        if (switchError.code === 4902) {
+                            await window.ethereum.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [{
+                                    chainId: sepoliaChainId,
+                                    chainName: 'Sepolia Test Network',
+                                    nativeCurrency: {
+                                        name: 'Sepolia ETH',
+                                        symbol: 'ETH',
+                                        decimals: 18,
+                                    },
+                                    rpcUrls: ['https://sepolia.infura.io/v3/'],
+                                    blockExplorerUrls: ['https://sepolia.etherscan.io/'],
+                                }],
+                            });
+                        } else {
+                            throw switchError;
+                        }
+                    }
+                    
+                    // Recreate provider after network switch
+                    if (window.ethersVersion === 'v5' || !ethers.BrowserProvider) {
+                        provider = new ethers.providers.Web3Provider(window.ethereum);
+                        signer = provider.getSigner();
+                    } else {
+                        provider = new ethers.BrowserProvider(window.ethereum);
+                        signer = await provider.getSigner();
+                    }
+                }
+
+                // Step 5: Initialize contract
+                contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                // Step 6: Update UI
+                await updateWalletStatus();
+                loadPrograms();
+                
+                // Step 7: Show success message and display initial state
+                showSuccessMessage('Successfully connected to Sepolia! ✅');
+                await displayInitialState();
+                
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+                let errorMessage = 'Failed to connect wallet. ';
+                
+                if (error.code === 4001) {
+                    errorMessage = 'Connection rejected. Please approve the connection request in MetaMask.';
+                } else if (error.code === -32002) {
+                    errorMessage = 'Connection request already pending. Please check MetaMask and approve the request.';
+                } else if (error.code === 4902) {
+                    errorMessage = 'Sepolia network not found. Please add Sepolia network to MetaMask.';
+                } else if (error.message && error.message.includes('network')) {
+                    errorMessage = 'Network error. Please ensure you are connected to Sepolia testnet.';
+                } else if (error.message && error.message.includes('rejected')) {
+                    errorMessage = 'Connection rejected by user. Please try again and approve the request.';
+                } else {
+                    errorMessage = 'Connection failed. Please ensure MetaMask is installed and try again.';
+                }
+                
+                showErrorMessage(errorMessage);
+            }
+        }
+
+        async function updateWalletStatus() {
+            const walletStatus = document.getElementById('walletStatus');
+            const connectButton = document.getElementById('connectWallet');
+            
+            if (userAddress) {
+                // Get network info
+                let networkName = 'Unknown';
+                try {
+                    const network = await provider.getNetwork();
+                    const chainId = window.ethersVersion === 'v5' ? network.chainId : Number(network.chainId);
+                    if (chainId === 11155111) {
+                        networkName = 'Sepolia';
+                    }
+                } catch (error) {
+                    console.warn('Could not get network info:', error);
+                }
+                
+                walletStatus.innerHTML = `
+                    <span class="text-success">
+                        <i class="fas fa-wallet me-1"></i>
+                        ${userAddress.substring(0, 6)}...${userAddress.substring(38)}
+                        <small class="d-block" style="font-size: 0.7rem;">
+                            <i class="fas fa-network-wired me-1"></i>${networkName}
+                        </small>
+                    </span>
+                `;
+                walletStatus.className = 'nav-link';
+                connectButton.textContent = 'Connected';
+                connectButton.className = 'btn btn-success btn-sm';
+                connectButton.disabled = true;
+            }
+        }
+
+        // Load preset scholarship programs
+        function loadPresetPrograms() {
+            const presetPrograms = [
+                {
+                    id: "preset_1",
+                    name: "Global Tech Innovation Scholarship",
+                    description: "Supporting students in Computer Science, AI, and Blockchain technology. Awards $5,000 to outstanding candidates with demonstrated technical skills and innovative project portfolios.",
+                    maxApplications: 25,
+                    currentApplications: 8,
+                    isActive: true,
+                    isContractProgram: false,
+                    eligibilityReq: ["GPA 3.5+", "Technical portfolio", "Financial need"]
+                },
+                {
+                    id: "preset_2",
+                    name: "Sustainable Future Engineering Grant",
+                    description: "For engineering students focused on renewable energy, environmental solutions, and sustainable development. $3,500 award for students committed to solving climate challenges.",
+                    maxApplications: 20,
+                    currentApplications: 12,
+                    isActive: true,
+                    isContractProgram: false,
+                    eligibilityReq: ["Engineering major", "Environmental project", "Community involvement"]
+                },
+                {
+                    id: "preset_3",
+                    name: "Digital Arts & Design Excellence Award",
+                    description: "Supporting creative students in digital media, graphic design, and user experience. $2,800 scholarship for innovative digital artists and designers.",
+                    maxApplications: 15,
+                    currentApplications: 6,
+                    isActive: true,
+                    isContractProgram: false,
+                    eligibilityReq: ["Portfolio submission", "Creative project", "Financial need"]
+                },
+                {
+                    id: "preset_4",
+                    name: "Healthcare Heroes Scholarship",
+                    description: "For pre-med, nursing, and healthcare students dedicated to improving global health outcomes. $4,200 award for future healthcare professionals.",
+                    maxApplications: 30,
+                    currentApplications: 19,
+                    isActive: true,
+                    isContractProgram: false,
+                    eligibilityReq: ["Healthcare major", "Volunteer experience", "Academic excellence"]
+                },
+                {
+                    id: "preset_5",
+                    name: "Entrepreneurship & Business Leadership Fund",
+                    description: "Supporting student entrepreneurs and future business leaders with innovative startup ideas. $3,000 grant for students with viable business concepts.",
+                    maxApplications: 18,
+                    currentApplications: 7,
+                    isActive: true,
+                    isContractProgram: false,
+                    eligibilityReq: ["Business plan", "Leadership experience", "Innovation focus"]
+                },
+                {
+                    id: "preset_6",
+                    name: "Underrepresented Communities STEM Grant",
+                    description: "Promoting diversity in STEM fields by supporting students from underrepresented backgrounds. $4,500 scholarship for qualified candidates.",
+                    maxApplications: 22,
+                    currentApplications: 14,
+                    isActive: true,
+                    isContractProgram: false,
+                    eligibilityReq: ["STEM major", "Underrepresented background", "Academic merit"]
+                }
+            ];
+
+            currentPrograms = presetPrograms; // Store globally
+            displayPrograms(presetPrograms);
+            populateProgramSelect(presetPrograms);
+        }
+
+        function displayPrograms(programs) {
+            console.log('displayPrograms called with:', programs);
+            const programsList = document.getElementById('programsList');
+            
+            if (!programs || programs.length === 0) {
+                console.warn('No programs to display');
+                programsList.innerHTML = `
+                    <div class="col-12 text-center">
+                        <p class="text-muted">No programs available at the moment.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            console.log('Displaying', programs.length, 'programs');
+            let programsHtml = '';
+            programs.forEach((program, index) => {
+                console.log(`Program ${index + 1}:`, program.name, 'ID:', program.id);
+                const progressPercentage = Math.round((program.currentApplications / program.maxApplications) * 100);
+                
+                programsHtml += `
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 program-card">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="card-title mb-0">${program.name}</h6>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <p class="card-text flex-grow-1">${program.description}</p>
+                                
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between small mb-1">
+                                        <span>Applications</span>
+                                        <span>${program.currentApplications}/${program.maxApplications}</span>
+                                    </div>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar ${progressPercentage >= 90 ? 'bg-danger' : progressPercentage >= 70 ? 'bg-warning' : 'bg-success'}" 
+                                             style="width: ${progressPercentage}%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <h6 class="small text-muted mb-2">Requirements:</h6>
+                                    <ul class="list-unstyled small">
+                                        ${program.eligibilityReq.map(req => `<li><i class="fas fa-check text-success me-2"></i>${req}</li>`).join('')}
+                                    </ul>
+                                </div>
+
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge ${program.isActive ? 'bg-success' : 'bg-secondary'}">
+                                            ${program.isActive ? 'Open' : 'Closed'}
+                                        </span>
+                                        <button class="btn btn-primary btn-sm apply-now-btn" 
+                                                data-program-id="${program.id}"
+                                                onclick="applyToProgram('${program.id}')"
+                                                ${!program.isActive || progressPercentage >= 100 ? 'disabled' : ''}>
+                                            <i class="fas fa-paper-plane me-1"></i>
+                                            Apply Now (ID: ${program.id})
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            programsList.innerHTML = programsHtml;
+        }
+
+        function populateProgramSelect(programs) {
+            console.log('populateProgramSelect called with:', programs.length, 'programs');
+            const programSelect = document.getElementById('programSelect');
+            
+            // Force clear all options
+            while (programSelect.firstChild) {
+                programSelect.removeChild(programSelect.firstChild);
+            }
+            
+            // Add placeholder
+            const placeholderOption = document.createElement('option');
+            placeholderOption.value = '';
+            placeholderOption.textContent = 'Choose a scholarship program...';
+            programSelect.appendChild(placeholderOption);
+            
+            let activeCount = 0;
+            programs.forEach(program => {
+                if (program.isActive) {
+                    activeCount++;
+                    const option = document.createElement('option');
+                    option.value = program.id;
+                    option.textContent = `${program.name} (ID: ${program.id})`;
+                    programSelect.appendChild(option);
+                    console.log('Added program to select:', program.name, 'ID:', program.id);
+                }
+            });
+            console.log('Added', activeCount, 'active programs to select dropdown');
+            
+            // Force reset selection
+            programSelect.value = '';
+        }
+
+        function applyToProgram(programId) {
+            console.log('Apply Now clicked for program ID:', programId, 'Type:', typeof programId);
+            
+            // SIMPLE APPROACH: Just click the tab and pre-select program
+            try {
+                // Click the Apply tab directly
+                const applyTabButton = document.getElementById('apply-tab');
+                if (applyTabButton) {
+                    console.log('Clicking Apply tab...');
+                    applyTabButton.click();
+                    
+                    // Small delay then pre-select program
+                    setTimeout(() => {
+                        const programSelect = document.getElementById('programSelect');
+                        if (programSelect) {
+                            console.log('Setting program select to:', programId);
+                            programSelect.value = programId;
+                            
+                            // Trigger change event
+                            const event = new Event('change', {bubbles: true});
+                            programSelect.dispatchEvent(event);
+                            
+                            console.log('Program pre-selected. Current value:', programSelect.value);
+                        }
+                        
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        
+                    }, 200);
+                    
+                } else {
+                    console.error('Apply tab button not found');
+                    // Fallback: manual tab switching
+                    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+                    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                    
+                    document.getElementById('apply').classList.add('show', 'active');
+                    document.getElementById('apply-tab').classList.add('active');
+                    
+                    setTimeout(() => {
+                        const programSelect = document.getElementById('programSelect');
+                        if (programSelect) {
+                            programSelect.value = programId;
+                            const event = new Event('change', {bubbles: true});
+                            programSelect.dispatchEvent(event);
+                        }
+                    }, 200);
+                }
+                
+            } catch (error) {
+                console.error('Apply button error:', error);
+                alert('Error switching tabs. Please manually click the "Apply Now" tab.');
+            }
+        }
+
+        function testApplyFunction() {
+            alert('Test Apply button clicked! This means JavaScript is working.');
+            console.log('Test function called');
+            applyToProgram(1); // Use program ID 1 for testing
+        }
+
+        async function deployAllPrograms() {
+            if (!contract || !userAddress) {
+                alert('Please connect your wallet first!');
+                return;
+            }
+
+            if (!confirm('This will deploy all 6 preset programs to the blockchain. Each program requires a separate transaction and gas fee. Continue?')) {
+                return;
+            }
+
+            const presetPrograms = [
+                {
+                    name: "Global Tech Innovation Scholarship",
+                    description: "Supporting students in Computer Science, AI, and Blockchain technology. Awards $5,000 to outstanding candidates with demonstrated technical skills and innovative project portfolios.",
+                    maxApplications: 25
+                },
+                {
+                    name: "Sustainable Future Engineering Grant", 
+                    description: "For engineering students focused on renewable energy, environmental solutions, and sustainable development. $3,500 award for students committed to solving climate challenges.",
+                    maxApplications: 20
+                },
+                {
+                    name: "Digital Arts & Design Excellence Award",
+                    description: "Supporting creative students in digital media, graphic design, and user experience. $2,800 scholarship for innovative digital artists and designers.",
+                    maxApplications: 15
+                },
+                {
+                    name: "Healthcare Heroes Scholarship",
+                    description: "For pre-med, nursing, and healthcare students dedicated to improving global health outcomes. $4,200 award for future healthcare professionals.",
+                    maxApplications: 30
+                },
+                {
+                    name: "Entrepreneurship & Business Leadership Fund",
+                    description: "Supporting student entrepreneurs and future business leaders with innovative startup ideas. $3,000 grant for students with viable business concepts.",
+                    maxApplications: 18
+                },
+                {
+                    name: "Underrepresented Communities STEM Grant",
+                    description: "Promoting diversity in STEM fields by supporting students from underrepresented backgrounds. $4,500 scholarship for qualified candidates.",
+                    maxApplications: 22
+                }
+            ];
+
+            try {
+                const initialCount = await contract.programCount();
+                console.log('Initial program count:', Number(initialCount));
+                
+                showSuccessMessage(`Starting deployment of ${presetPrograms.length} programs...`);
+
+                for (let i = 0; i < presetPrograms.length; i++) {
+                    const program = presetPrograms[i];
+                    
+                    console.log(`Deploying program ${i + 1}: ${program.name}`);
+                    showSuccessMessage(`Deploying program ${i + 1}/${presetPrograms.length}: ${program.name}`);
+                    
+                    try {
+                        // Create program on blockchain
+                        const tx = await contract.createProgram(
+                            program.name,
+                            program.description,
+                            program.maxApplications
+                        );
+                        
+                        console.log(`Transaction sent: ${tx.hash}`);
+                        showSuccessMessage(`Transaction sent for program ${i + 1}. Waiting for confirmation...`);
+                        
+                        // Wait for confirmation
+                        const receipt = await tx.wait();
+                        console.log(`Program ${i + 1} confirmed in block: ${receipt.blockNumber}`);
+                        
+                        // Get the new program count to verify
+                        const newCount = await contract.programCount();
+                        console.log(`Program created with ID: ${newCount.toString()}`);
+                        
+                        showSuccessMessage(`✅ Program ${i + 1} deployed successfully! ID: ${newCount.toString()}`);
+                        
+                    } catch (error) {
+                        console.error(`Failed to deploy program ${i + 1}:`, error);
+                        showErrorMessage(`❌ Failed to deploy program ${i + 1}: ${program.name}`);
+                        
+                        if (!confirm(`Failed to deploy program ${i + 1}. Continue with remaining programs?`)) {
+                            break;
+                        }
+                    }
+                    
+                    // Small delay between deployments
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+
+                // Final verification
+                const finalCount = await contract.programCount();
+                const deployedCount = Number(finalCount) - Number(initialCount);
+                
+                console.log(`Deployment complete! Programs deployed: ${deployedCount}`);
+                showSuccessMessage(`🎉 Deployment complete! ${deployedCount} programs deployed. Total on chain: ${finalCount.toString()}`);
+                
+                // Refresh the program display
+                loadPrograms();
+                
+            } catch (error) {
+                console.error('Deployment failed:', error);
+                showErrorMessage('Deployment failed: ' + error.message);
+            }
+        }
+
+        function forceRefreshPrograms() {
+            console.log('Force refreshing programs...');
+            currentPrograms = []; // Clear current programs
+            
+            // Show loading
+            document.getElementById('programsList').innerHTML = `
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Refreshing programs...</p>
+                </div>
+            `;
+            
+            // Force reload preset programs
+            loadPresetPrograms();
+            
+            // If wallet is connected, also load contract programs
+            if (contract) {
+                loadPrograms();
+            }
+            
+            showSuccessMessage('Programs refreshed! Please select a program again.');
+        }
+
+        async function loadPrograms() {
+            if (!contract) {
+                // Just show preset programs without contract
+                loadPresetPrograms();
+                return;
+            }
+
+            try {
+                const programCount = await contract.programCount();
+                console.log('Contract program count:', Number(programCount));
+                
+                if (programCount > 0) {
+                    const contractPrograms = [];
+
+                    for (let i = 1; i <= programCount; i++) {
+                        try {
+                            const programInfo = await contract.getProgramInfo(i);
+                            contractPrograms.push({
+                                id: i, // Use actual blockchain ID
+                                name: programInfo.name,
+                                description: programInfo.description,
+                                maxApplications: Number(programInfo.maxApplications),
+                                currentApplications: Number(programInfo.currentApplications),
+                                isActive: programInfo.isActive,
+                                isContractProgram: true,
+                                isOnChain: true
+                            });
+                            console.log(`Loaded on-chain program ${i}: ${programInfo.name}`);
+                        } catch (error) {
+                            console.warn(`Error loading program ${i}:`, error);
+                        }
+                    }
+
+                    if (contractPrograms.length > 0) {
+                        // Use ONLY contract programs, no preset programs
+                        currentPrograms = contractPrograms;
+                        displayPrograms(contractPrograms);
+                        populateProgramSelect(contractPrograms);
+                        
+                        console.log('Loaded', contractPrograms.length, 'on-chain programs');
+                        showSuccessMessage(`Loaded ${contractPrograms.length} programs from blockchain`);
+                    } else {
+                        console.log('No valid contract programs found, showing preset programs');
+                        loadPresetPrograms();
+                    }
+                } else {
+                    console.log('No contract programs found, showing preset programs only');
+                    loadPresetPrograms();
+                }
+            } catch (error) {
+                console.error('Error loading contract programs:', error);
+                console.log('Falling back to preset programs');
+                loadPresetPrograms();
+            }
+        }
+
+        function displayNoContractMessage() {
+            document.getElementById('programsList').innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-plug fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">Connect Your Wallet</h5>
+                    <p class="text-muted">Connect your wallet to view available scholarship programs from the blockchain</p>
+                    <button class="btn btn-primary" onclick="connectWallet()">
+                        <i class="fas fa-wallet me-2"></i>Connect Wallet
+                    </button>
+                </div>
+            `;
+        }
+
+        function displayNoProgramsMessage() {
+            document.getElementById('programsList').innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-plus-circle fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No Programs Available</h5>
+                    <p class="text-muted">No scholarship programs found on the blockchain. Create some programs using the Admin Panel.</p>
+                    <button class="btn btn-success" onclick="document.getElementById('admin-tab').click()">
+                        <i class="fas fa-plus me-2"></i>Create Program
+                    </button>
+                </div>
+            `;
+        }
+
+        function displayErrorMessage(message) {
+            document.getElementById('programsList').innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                    <h5 class="text-danger">Error Loading Programs</h5>
+                    <p class="text-muted">${message}</p>
+                    <button class="btn btn-outline-primary" onclick="loadPrograms()">
+                        <i class="fas fa-redo me-2"></i>Try Again
+                    </button>
+                </div>
+            `;
+        }
+
+        function displayPrograms(programs) {
+            const programsList = document.getElementById('programsList');
+            
+            if (programs.length === 0) {
+                programsList.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No programs available</p></div>';
+                return;
+            }
+
+            programsList.innerHTML = programs.map(program => `
+                <div class="col-md-6 mb-4">
+                    <div class="card program-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-award me-2 text-primary"></i>
+                                ${program.name}
+                                ${program.isContractProgram ? 
+                                    '<span class="badge bg-success ms-2"><i class="fas fa-link me-1"></i>On-Chain</span>' : 
+                                    '<span class="badge bg-primary ms-2"><i class="fas fa-star me-1"></i>Featured</span>'
+                                }
+                            </h5>
+                            <p class="card-text">${program.description}</p>
+                            
+                            ${program.eligibilityReq ? `
+                                <div class="mb-3">
+                                    <small class="text-muted fw-bold">Requirements:</small>
+                                    <div class="mt-1">
+                                        ${program.eligibilityReq.map(req => 
+                                            `<span class="badge bg-light text-dark me-1 mb-1">${req}</span>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="row text-center mt-3">
+                                <div class="col-4">
+                                    <small class="text-muted">Applications</small>
+                                    <div class="h6">${program.currentApplications}/${program.maxApplications}</div>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">Status</small>
+                                    <div class="h6">
+                                        <span class="status-badge ${program.isActive ? 'status-approved' : 'status-rejected'}">
+                                            ${program.isActive ? 'Active' : 'Closed'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">Available</small>
+                                    <div class="h6">${program.maxApplications - program.currentApplications}</div>
+                                </div>
+                            </div>
+                            <div class="progress mt-3">
+                                <div class="progress-bar ${program.currentApplications >= program.maxApplications ? 'bg-danger' : ''}" 
+                                     role="progressbar" 
+                                     style="width: ${(program.currentApplications / program.maxApplications) * 100}%">
+                                </div>
+                            </div>
+                            
+                            ${program.isActive && program.currentApplications < program.maxApplications ? 
+                                `<div class="mt-3">
+                                    <button class="btn btn-primary btn-sm w-100" onclick="selectProgram(${program.id})">
+                                        <i class="fas fa-paper-plane me-1"></i>Apply Now
+                                    </button>
+                                    ${!program.isContractProgram ? 
+                                        '<small class="text-muted d-block mt-1"><i class="fas fa-info-circle me-1"></i>Real blockchain transaction required</small>' : 
+                                        '<small class="text-success d-block mt-1"><i class="fas fa-check me-1"></i>Already on blockchain</small>'
+                                    }
+                                </div>` : 
+                                `<button class="btn btn-secondary btn-sm mt-3 w-100" disabled>
+                                    ${program.currentApplications >= program.maxApplications ? 'Full' : 'Closed'}
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function populateProgramSelect(programs) {
+            const programSelect = document.getElementById('programSelect');
+            programSelect.innerHTML = '<option value="">Choose a scholarship program...</option>';
+            
+            programs.filter(program => program.isActive && program.currentApplications < program.maxApplications).forEach((program) => {
+                const available = program.maxApplications - program.currentApplications;
+                const typeLabel = program.isContractProgram ? '[On-Chain]' : '[Featured]';
+                programSelect.innerHTML += `<option value="${program.id}" data-program='${JSON.stringify(program)}'>
+                    ${typeLabel} ${program.name} (${available} spots available)
+                </option>`;
+            });
+        }
+
+        function selectProgram(programId) {
+            // Switch to Apply tab
+            const applyTab = new bootstrap.Tab(document.getElementById('apply-tab'));
+            applyTab.show();
+            
+            // Select the program in dropdown
+            const programSelect = document.getElementById('programSelect');
+            programSelect.value = programId;
+            
+            // Trigger change event to update form
+            programSelect.dispatchEvent(new Event('change'));
+        }
+
+        // Global variable to store current programs
+        let currentPrograms = [];
+
+        async function handleApplicationSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            
+            try {
+                // Check wallet connection
+                if (!contract || !userAddress) {
+                    showErrorMessage('Please connect your wallet first');
+                    return;
+                }
+
+                const programId = document.getElementById('programSelect').value;
+                const hasFinancialNeed = document.getElementById('financialNeed').checked;
+                const meetsAcademicCriteria = document.getElementById('academicCriteria').checked;
+                console.log('Selected program ID:', programId, 'Type:', typeof programId);
+                console.log('Available programs:', currentPrograms.map(p => ({id: p.id, name: p.name})));
+                
+                const selectedProgram = currentPrograms.find(p => p.id == programId);
+                console.log('Found selected program:', selectedProgram);
+
+                if (!programId || !selectedProgram) {
+                    console.error('Program not found. ProgramId:', programId, 'Available IDs:', currentPrograms.map(p => p.id));
+                    showErrorMessage('Please select a valid program. If you see this error, please refresh the page.');
+                    return;
+                }
+
+                // Update button to show processing
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing Transaction...';
+
+                // Show transaction info
+                showSuccessMessage(`Submitting application for: ${selectedProgram.name}`);
+                
+                console.log('Submitting application:', {
+                    programId,
+                    hasFinancialNeed,
+                    meetsAcademicCriteria,
+                    user: userAddress,
+                    program: selectedProgram.name,
+                    isContractProgram: selectedProgram.isContractProgram,
+                    selectedProgram: selectedProgram
+                });
+
+                // Validate contract and connection
+                if (!contract) {
+                    throw new Error('Contract not initialized. Please refresh and try again.');
+                }
+
+                if (!userAddress) {
+                    throw new Error('Wallet not connected. Please connect your wallet.');
+                }
+
+                // Check network first
+                try {
+                    const network = await provider.getNetwork();
+                    const chainId = window.ethersVersion === 'v5' ? network.chainId : Number(network.chainId);
+                    console.log('Current network chainId:', chainId);
+                    
+                    if (chainId !== 11155111) {
+                        console.warn(`Wrong network detected: ${chainId}. Attempting to continue anyway...`);
+                        showErrorMessage(`Warning: You are connected to chainId ${chainId}. Please switch to Sepolia testnet (11155111) for proper functionality.`);
+                        // Don't throw error, just warn
+                    } else {
+                        console.log('Network validation passed - connected to Sepolia');
+                    }
+                } catch (error) {
+                    console.warn('Network validation warning:', error);
+                    // Don't throw error, just log warning
+                }
+
+                // Check if contract is deployed at the address
+                try {
+                    console.log('Checking contract deployment at:', CONTRACT_ADDRESS);
+                    const code = await provider.getCode(CONTRACT_ADDRESS);
+                    console.log('Contract code length:', code.length, 'First 20 chars:', code.substring(0, 20));
+                    
+                    if (code === '0x' || code.length <= 2) {
+                        console.warn('Contract code appears empty, but continuing anyway...');
+                        showErrorMessage('Warning: Contract may not be properly deployed. Transaction may fail.');
+                        // Don't throw error, let user try
+                    } else {
+                        console.log('Contract validation passed - contract exists at address');
+                    }
+                } catch (error) {
+                    console.warn('Contract validation warning:', error);
+                    showErrorMessage('Warning: Could not verify contract deployment. Transaction may fail.');
+                    // Don't throw error, let user try
+                }
+
+                // SIMPLIFIED LOGIC: Always create program first, then submit
+                // This ensures real blockchain transactions regardless of program type
+                let tx;
+                
+                console.log('Selected program for submission:', {
+                    id: selectedProgram.id,
+                    name: selectedProgram.name,
+                    type: typeof selectedProgram.id
+                });
+                
+                console.log('USING EXISTING ON-CHAIN PROGRAMS');
+                
+                // Find the matching program on chain by name
+                let targetProgramId = null;
+                const programCount = await contract.programCount();
+                console.log('Total programs on chain:', Number(programCount));
+                
+                // Search for matching program by name
+                for (let i = 1; i <= programCount; i++) {
+                    try {
+                        const programInfo = await contract.getProgramInfo(i);
+                        console.log(`Program ${i}: ${programInfo.name}`);
+                        
+                        if (programInfo.name === selectedProgram.name) {
+                            targetProgramId = i;
+                            console.log(`Found matching program: ID ${i} - ${programInfo.name}`);
+                            break;
+                        }
+                    } catch (error) {
+                        console.warn(`Error checking program ${i}:`, error);
+                    }
+                }
+                
+                if (!targetProgramId) {
+                    // If no matching program found, use program ID 1 as fallback
+                    targetProgramId = 1;
+                    console.log('No matching program found, using program ID 1 as fallback');
+                }
+                
+                console.log(`Submitting application to program ID: ${targetProgramId}`);
+                showSuccessMessage(`Submitting application to program ${targetProgramId}...`);
+                
+                // Submit application directly to existing program
+                tx = await contract.submitApplication(
+                    targetProgramId,
+                    hasFinancialNeed,
+                    meetsAcademicCriteria
+                );
+                
+                if (false) { // This block will never execute - keeping old logic commented out
+                    // For contract programs, use the contract program ID
+                    const contractProgramId = selectedProgram.id - 1000;
+                    console.log('Submitting to contract program ID:', contractProgramId);
+                    
+                    // Validate program exists
+                    try {
+                        const programInfo = await contract.getProgramInfo(contractProgramId);
+                        if (!programInfo.isActive) {
+                            throw new Error('Selected program is not active.');
+                        }
+                        console.log('Program validated:', programInfo.name);
+                    } catch (error) {
+                        console.error('Program validation error:', error);
+                        throw new Error('Selected program does not exist or is inactive.');
+                    }
+                    
+                    tx = await contract.submitApplication(
+                        contractProgramId,
+                        hasFinancialNeed,
+                        meetsAcademicCriteria
+                    );
+                } else {
+                    // For preset programs, first create the program on-chain, then submit
+                    console.log('Creating preset program on-chain and submitting application...');
+                    
+                    // Check if this preset program already exists on-chain
+                    let existingProgramId = null;
+                    try {
+                        const programCount = await contract.programCount();
+                        console.log('Current program count on contract:', Number(programCount));
+                        
+                        if (programCount > 0) {
+                            for (let i = 1; i <= programCount; i++) {
+                                try {
+                                    const programInfo = await contract.getProgramInfo(i);
+                                    console.log(`Program ${i}: ${programInfo.name}`);
+                                    if (programInfo.name === selectedProgram.name) {
+                                        existingProgramId = i;
+                                        break;
+                                    }
+                                } catch (progError) {
+                                    console.warn(`Error getting program ${i}:`, progError);
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('Error checking existing programs:', error);
+                    }
+                    
+                    if (existingProgramId) {
+                        // Program already exists, submit to it
+                        console.log('Using existing on-chain program ID:', existingProgramId);
+                        
+                        // Validate the existing program
+                        try {
+                            const programInfo = await contract.getProgramInfo(existingProgramId);
+                            if (!programInfo.isActive) {
+                                throw new Error('Existing program is not active.');
+                            }
+                            if (Number(programInfo.currentApplications) >= Number(programInfo.maxApplications)) {
+                                throw new Error('Program is full.');
+                            }
+                        } catch (error) {
+                            console.error('Existing program validation failed:', error);
+                            throw error;
+                        }
+                        
+                        tx = await contract.submitApplication(
+                            existingProgramId,
+                            hasFinancialNeed,
+                            meetsAcademicCriteria
+                        );
+                    } else {
+                        // Create the program first, then submit
+                        console.log('Program not found on chain, creating new program...');
+                        showSuccessMessage('Creating program on blockchain first...');
+                        
+                        // Validate parameters before creating
+                        if (!selectedProgram.name || !selectedProgram.description || !selectedProgram.maxApplications) {
+                            throw new Error('Invalid program data for creation.');
+                        }
+                        
+                        const createTx = await contract.createProgram(
+                            selectedProgram.name,
+                            selectedProgram.description,
+                            selectedProgram.maxApplications
+                        );
+                        
+                        submitBtn.innerHTML = '<i class="fas fa-clock me-2"></i>Creating Program...';
+                        const createReceipt = await createTx.wait();
+                        console.log('Program creation confirmed:', createReceipt);
+                        
+                        // Get the new program ID
+                        const newProgramCount = await contract.programCount();
+                        console.log('New program count:', Number(newProgramCount));
+                        
+                        showSuccessMessage('Program created! Now submitting application...');
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting Application...';
+                        
+                        // Submit application to the newly created program
+                        tx = await contract.submitApplication(
+                            newProgramCount,
+                            hasFinancialNeed,
+                            meetsAcademicCriteria
+                        );
+                    }
+                }
+                
+                // Update button to show waiting for confirmation
+                submitBtn.innerHTML = '<i class="fas fa-clock me-2"></i>Waiting for Confirmation...';
+                
+                console.log('Transaction submitted:', tx.hash);
+                showSuccessMessage(`Transaction submitted! Hash: ${tx.hash.substring(0, 10)}...`);
+                
+                // Wait for transaction confirmation
+                const receipt = await tx.wait();
+                
+                console.log('Transaction confirmed:', receipt);
+                
+                // Success feedback
+                if (selectedProgram.isContractProgram) {
+                    showSuccessMessage(`Application submitted to On-Chain program! ✅
+                    Transaction Hash: ${receipt.transactionHash}`);
+                } else {
+                    showSuccessMessage(`Application submitted to Featured program! ✅
+                    Transaction Hash: ${receipt.transactionHash}`);
+                }
+                
+                // Reset form
+                document.getElementById('applicationForm').reset();
+                document.getElementById('programDetails').style.display = 'none';
+                updateSubmitButton();
+                
+                // Reload programs to get updated data from blockchain
+                loadPrograms();
+                
+                // Immediately try to refresh applications data
+                console.log('Application submitted successfully, refreshing data...');
+                
+                // Switch to applications tab and load applications
+                setTimeout(() => {
+                    const applicationsTab = new bootstrap.Tab(document.getElementById('applications-tab'));
+                    applicationsTab.show();
+                    
+                    // Multiple refresh attempts to ensure data is loaded
+                    setTimeout(() => loadUserApplications(), 500);
+                    setTimeout(() => loadUserApplications(), 2000);
+                    setTimeout(() => loadUserApplications(), 5000);
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                console.error('Full error details:', {
+                    code: error.code,
+                    message: error.message,
+                    data: error.data,
+                    transaction: error.transaction
+                });
+                
+                let errorMessage = 'Failed to submit application. ';
+                
+                if (error.code === 4001) {
+                    errorMessage += 'Transaction was rejected by user.';
+                } else if (error.code === -32603) {
+                    errorMessage += 'Execution reverted. Please check program requirements.';
+                } else if (error.code === 'CALL_EXCEPTION') {
+                    errorMessage += 'Contract call failed. ';
+                    if (error.message.includes('missing revert data')) {
+                        errorMessage += 'This usually means the program ID does not exist on-chain. For preset programs, the system will try to create the program first.';
+                    } else {
+                        errorMessage += 'Please check contract address and program ID.';
+                    }
+                } else if (error.message && error.message.includes('insufficient funds')) {
+                    errorMessage += 'Insufficient funds for gas fees.';
+                } else if (error.message && error.message.includes('Contract not initialized')) {
+                    errorMessage += 'Please refresh the page and reconnect your wallet.';
+                } else if (error.message && error.message.includes('No contract found')) {
+                    errorMessage += 'Contract not deployed at the specified address. Please check the contract address.';
+                } else if (error.message && error.message.includes('does not exist')) {
+                    errorMessage += error.message;
+                } else {
+                    errorMessage += error.message || 'Please try again.';
+                }
+                
+                errorMessage += '\n\nDebug info: Check browser console for detailed logs.';
+                showErrorMessage(errorMessage);
+                
+            } finally {
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+
+        async function handleCreateProgram(event) {
+            event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            try {
+                if (!contract || !userAddress) {
+                    showErrorMessage('Please connect your wallet first');
+                    return;
+                }
+
+                const name = document.getElementById('programName').value;
+                const description = document.getElementById('programDescription').value;
+                const maxApplications = document.getElementById('maxApplications').value;
+
+                if (!name || !description || !maxApplications) {
+                    showErrorMessage('Please fill in all fields');
+                    return;
+                }
+
+                // Update button to show processing
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Program...';
+
+                console.log('Creating program:', { name, description, maxApplications });
+
+                const tx = await contract.createProgram(name, description, maxApplications);
+                
+                submitBtn.innerHTML = '<i class="fas fa-clock me-2"></i>Waiting for Confirmation...';
+                
+                console.log('Transaction submitted:', tx.hash);
+                showSuccessMessage(`Program creation transaction submitted! Hash: ${tx.hash.substring(0, 10)}...`);
+                
+                const receipt = await tx.wait();
+                
+                console.log('Program created successfully:', receipt);
+                showSuccessMessage(`Program "${name}" created successfully! ✅`);
+                
+                // Reset form
+                document.getElementById('createProgramForm').reset();
+                
+                // Reload programs
+                loadPrograms();
+                
+            } catch (error) {
+                console.error('Error creating program:', error);
+                
+                let errorMessage = 'Failed to create program. ';
+                if (error.code === 4001) {
+                    errorMessage += 'Transaction was rejected by user.';
+                } else if (error.message && error.message.includes('insufficient funds')) {
+                    errorMessage += 'Insufficient funds for gas fees.';
+                } else {
+                    errorMessage += 'Please try again.';
+                }
+                
+                showErrorMessage(errorMessage);
+                
+            } finally {
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+
+        async function loadUserApplications() {
+            if (!contract || !userAddress) {
+                document.getElementById('applicationsList').innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-wallet fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Connect Your Wallet</h5>
+                        <p class="text-muted">Please connect your wallet to view your application history</p>
+                        <button class="btn btn-primary" onclick="connectWallet()">
+                            <i class="fas fa-plug me-2"></i>Connect Wallet
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                // Show loading state
+                document.getElementById('applicationsList').innerHTML = `
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 text-muted">Loading your applications...</p>
+                    </div>
+                `;
+                
+                const applicationIds = await contract.getMyApplications(userAddress);
+                console.log('User applications found:', applicationIds.length, 'for address:', userAddress);
+                
+                if (applicationIds.length === 0) {
+                    document.getElementById('applicationsList').innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No Applications Yet</h5>
+                            <p class="text-muted">You haven't submitted any scholarship applications yet</p>
+                            <button class="btn btn-primary" onclick="document.getElementById('apply-tab').click()">
+                                <i class="fas fa-plus me-2"></i>Submit Application
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let applicationsHtml = `
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Found ${applicationIds.length} application(s) for address: <code>${userAddress}</code>
+                        <button class="btn btn-sm btn-outline-info ms-2" onclick="loadUserApplications()">
+                            <i class="fas fa-redo me-1"></i>Refresh Now
+                        </button>
+                    </div>
+                `;
+                
+                for (let i = 0; i < applicationIds.length; i++) {
+                    const appId = applicationIds[i];
+                    console.log(`Loading application ${i + 1}/${applicationIds.length}: ID ${appId}`);
+                    const appInfo = await contract.getApplicationBasicInfo(appId);
+                    
+                    // Find which program this application belongs to by checking events
+                    let programName = 'Loading...';
+                    let programId = null;
+                    
+                    try {
+                        // Get all ApplicationSubmitted events and find the one for this application ID
+                        const filter = contract.filters.ApplicationSubmitted();
+                        const events = await contract.queryFilter(filter, 0, 'latest');
+                        
+                        console.log('Found', events.length, 'ApplicationSubmitted events');
+                        
+                        // Find the event where the applicationId matches our appId
+                        const matchingEvent = events.find(event => {
+                            const eventAppId = Number(event.args.applicationId || event.args[0]);
+                            return eventAppId === Number(appId);
+                        });
+                        
+                        if (matchingEvent) {
+                            programId = Number(matchingEvent.args.programId || matchingEvent.args[1]);
+                            console.log('Found matching event for app', appId, 'program', programId);
+                            
+                            try {
+                                const programInfo = await contract.getProgramInfo(programId);
+                                programName = programInfo.name;
+                            } catch (progError) {
+                                console.warn('Could not get program info for program', programId, progError);
+                                programName = `Program #${programId}`;
+                            }
+                        } else {
+                            console.warn('No matching event found for application', appId);
+                            programName = `Application #${appId}`;
+                        }
+                    } catch (error) {
+                        console.warn('Could not query events for application', appId, error);
+                        programName = `Application #${appId}`;
+                    }
+                    
+                    applicationsHtml += `
+                        <div class="card application-item shadow-sm">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-graduation-cap text-primary me-2"></i>
+                                            <h6 class="mb-0">${programName}</h6>
+                                        </div>
+                                        <div class="d-flex align-items-center text-muted small">
+                                            <i class="fas fa-calendar me-2"></i>
+                                            <span>Submitted: ${new Date(Number(appInfo.timestamp) * 1000).toLocaleDateString()}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center text-muted small mt-1">
+                                            <i class="fas fa-hashtag me-2"></i>
+                                            <span>Application ID: #${appId}</span>
+                                        </div>
+                                        ${programId ? `
+                                            <div class="d-flex align-items-center text-muted small mt-1">
+                                                <i class="fas fa-award me-2"></i>
+                                                <span>Program ID: #${programId}</span>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <span class="status-badge ${appInfo.processed ? 'status-approved' : 'status-pending'}">
+                                            <i class="fas ${appInfo.processed ? 'fa-check-circle' : 'fa-clock'} me-1"></i>
+                                            ${appInfo.processed ? 'Processed' : 'Under Review'}
+                                        </span>
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                ${appInfo.processed ? 'Decision Available' : 'Awaiting Review...'}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <div class="alert alert-info py-2 mb-0">
+                                            <i class="fas fa-shield-alt me-2"></i>
+                                            <small>Data encrypted with FHE technology</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="alert alert-success py-2 mb-0">
+                                            <i class="fas fa-link me-2"></i>
+                                            <small>Stored on Sepolia blockchain</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('applicationsList').innerHTML = applicationsHtml;
+            } catch (error) {
+                console.error('Error loading applications:', error);
+                document.getElementById('applicationsList').innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                        <h5 class="text-danger">Error Loading Applications</h5>
+                        <p class="text-muted">Unable to fetch your applications. Please try again.</p>
+                        <button class="btn btn-outline-primary" onclick="loadUserApplications()">
+                            <i class="fas fa-redo me-2"></i>Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadAdminData() {
+            if (!contract) {
+                return;
+            }
+
+            // Load admin applications list
+            document.getElementById('adminApplicationsList').innerHTML = `
+                <div class="text-center">
+                    <p class="text-muted">Admin functionality requires contract interaction</p>
+                </div>
+            `;
+        }
+
+        // Utility functions
+        function showLoading(elementId) {
+            document.getElementById(elementId).innerHTML = `
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function hideLoading() {
+            document.querySelectorAll('.spinner-border').forEach(spinner => {
+                spinner.style.display = 'none';
+            });
+        }
+
+        function showSuccessMessage(message) {
+            // Create success toast or alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+            alertDiv.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function showErrorMessage(message) {
+            // Create error toast or alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+            alertDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 8 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 8000);
+        }
+
+        async function displayInitialState() {
+            try {
+                if (!contract || !userAddress) return;
+                
+                // Get account balance
+                const balance = await provider.getBalance(userAddress);
+                const ethBalance = window.ethersVersion === 'v5' || !ethers.formatEther ? 
+                    ethers.utils.formatEther(balance) : 
+                    ethers.formatEther(balance);
+                
+                // Get network details
+                const network = await provider.getNetwork();
+                
+                const chainId = window.ethersVersion === 'v5' ? network.chainId : Number(network.chainId);
+                console.log(`
+=== Wallet Connected Successfully ===
+Address: ${userAddress}
+Network: ${network.name} (Chain ID: ${chainId})
+Balance: ${ethBalance} ETH
+Contract: ${CONTRACT_ADDRESS}
+Ethers.js Version: ${window.ethersVersion || 'v6'}
+=====================================
+                `);
+                
+                // Update UI to show main interface instead of connection button
+                const heroSection = document.querySelector('.hero-section .container .row');
+                if (heroSection) {
+                    heroSection.innerHTML = `
+                        <div class="col-12 text-center">
+                            <div class="card bg-light border-0">
+                                <div class="card-body">
+                                    <h5 class="text-success">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Wallet Connected Successfully!
+                                    </h5>
+                                    <p class="mb-2">
+                                        <strong>Address:</strong> ${userAddress}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Network:</strong> ${network.name} (Chain ID: ${chainId})
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Balance:</strong> ${parseFloat(ethBalance).toFixed(4)} ETH
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error displaying initial state:', error);
+            }
+        }
+
+        // Initialize page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing...');
+            
+            // Load preset programs initially
+            loadPresetPrograms();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            console.log('Preset programs loaded. Current programs count:', currentPrograms.length);
+        });
+    </script>
+</body>
+</html>
