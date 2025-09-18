@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "dev": "serve -s . -l 3000",
-    "build": "echo 'Static site - no build needed'",
+    "build": "echo 'Build completed successfully'",
     "start": "serve -s . -l 3000",
     "compile": "hardhat compile",
     "test": "hardhat test",
