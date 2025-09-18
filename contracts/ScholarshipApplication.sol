@@ -64,6 +64,7 @@ contract AnonymousScholarshipApplication {
         bool _hasFinancialNeed,
         bool _meetsAcademicCriteria
     ) external {
+        require(_programId > 0 && _programId <= programCount, "Invalid program ID");
         require(programs[_programId].isActive, "Program not active");
         require(programs[_programId].currentApplications < programs[_programId].maxApplications, "Program full");
 

@@ -1494,12 +1494,28 @@
                 
                 console.log(`Submitting application to program ID: ${targetProgramId}`);
                 showSuccessMessage(`Submitting application to program ${targetProgramId}...`);
-                
+
+                // First validate that the program exists and is active
+                try {
+                    const programInfo = await contract.getProgramInfo(targetProgramId);
+                    if (!programInfo.isActive) {
+                        throw new Error('Selected program is not active.');
+                    }
+                    console.log('Program validated:', programInfo.name);
+                } catch (error) {
+                    console.error('Program validation error:', error);
+                    throw new Error('Selected program does not exist or is inactive.');
+                }
+
                 // Submit application directly to existing program
                 tx = await contract.submitApplication(
                     targetProgramId,
                     hasFinancialNeed,
-                    meetsAcademicCriteria
+                    meetsAcademicCriteria,
+                    {
+                        gasLimit: 3000000, // Increased gas limit for FHE operations
+                        gasPrice: ethers.parseUnits('20', 'gwei') // Explicit gas price
+                    }
                 );
                 
                 if (false) { // This block will never execute - keeping old logic commented out
@@ -1522,7 +1538,11 @@
                     tx = await contract.submitApplication(
                         contractProgramId,
                         hasFinancialNeed,
-                        meetsAcademicCriteria
+                        meetsAcademicCriteria,
+                        {
+                            gasLimit: 3000000, // Increased gas limit for FHE operations
+                            gasPrice: ethers.parseUnits('20', 'gwei') // Explicit gas price
+                        }
                     );
                 } else {
                     // For preset programs, first create the program on-chain, then submit
@@ -1573,7 +1593,11 @@
                         tx = await contract.submitApplication(
                             existingProgramId,
                             hasFinancialNeed,
-                            meetsAcademicCriteria
+                            meetsAcademicCriteria,
+                            {
+                                gasLimit: 3000000, // Increased gas limit for FHE operations
+                                gasPrice: ethers.parseUnits('20', 'gwei') // Explicit gas price
+                            }
                         );
                     } else {
                         // Create the program first, then submit
@@ -1606,7 +1630,11 @@
                         tx = await contract.submitApplication(
                             newProgramCount,
                             hasFinancialNeed,
-                            meetsAcademicCriteria
+                            meetsAcademicCriteria,
+                            {
+                                gasLimit: 3000000, // Increased gas limit for FHE operations
+                                gasPrice: ethers.parseUnits('20', 'gwei') // Explicit gas price
+                            }
                         );
                     }
                 }
@@ -1671,10 +1699,14 @@
                 } else if (error.code === 'CALL_EXCEPTION') {
                     errorMessage += 'Contract call failed. ';
                     if (error.message.includes('missing revert data')) {
-                        errorMessage += 'This usually means the program ID does not exist on-chain. For preset programs, the system will try to create the program first.';
+                        errorMessage += 'This usually indicates a gas estimation failure or invalid contract state. Try increasing gas limit or check if the program exists.';
                     } else {
                         errorMessage += 'Please check contract address and program ID.';
                     }
+                } else if (error.code === 'UNPREDICTABLE_GAS_LIMIT') {
+                    errorMessage += 'Gas estimation failed. This may indicate the transaction would revert. Please check program requirements and try again.';
+                } else if (error.message && error.message.includes('gas')) {
+                    errorMessage += 'Gas-related error. Try increasing gas limit or check network conditions.';
                 } else if (error.message && error.message.includes('insufficient funds')) {
                     errorMessage += 'Insufficient funds for gas fees.';
                 } else if (error.message && error.message.includes('Contract not initialized')) {
